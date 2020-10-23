@@ -1,0 +1,11 @@
+'IsExits File function 
+Public Function isFileExits(strFilePath As String) As Boolean
+    
+    Dim FSO As Object
+    
+    isFileExits = False
+    Set FSO = CreateObject("Scripting.FileSystemObject")
+    If FSO.FileExists(strFilePath) Then isFileExits = True
+    Set FSO = Nothing
+    
+End Function
