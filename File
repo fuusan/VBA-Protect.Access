@@ -9,3 +9,37 @@ Public Function isFileExits(strFilePath As String) As Boolean
     Set FSO = Nothing
     
 End Function
+
+' @Purpose:  Get Corresponding sheet
+' @Param  :  {Workbook} Book
+'            {String}   sheetname
+' @Return :　Worksheet
+Public Function GetSheet(ByVal Book As Workbook, ByVal SheetName As String) As Worksheet
+    Dim sheet As Object
+    For Each sheet In Book.Worksheets
+        If sheet.Name = SheetName Then
+            Set GetSheet = sheet
+            Exit Function
+        End If
+    Next
+    Set GetSheet = Nothing
+    
+End Function
+
+' @Purpose:  Get Workbook
+' @Param  :  {Object} objExcel
+'            {String}   FilePath
+' @Return :　Workbook
+Public Function GetWB(objExcel As Object, FilePath As String) As Workbook
+    
+    Dim inWB As Workbook
+    
+    Set inWB = objExcel.Workbooks.Open(FilePath)
+    
+    If Err.Number = 0 Then
+        Set GetWB = inWB
+    Else
+        Set GetWB = Nothing
+    End If
+    
+End Function
