@@ -9,6 +9,48 @@ Public Function isFileExits(strFilePath As String) As Boolean
     Set FSO = Nothing
     
 End Function
+Public Function IsFolderExists(ByVal FName As String) As Boolean
+
+    Dim FSO As Object
+    Set FSO = CreateObject("Scripting.FileSystemObject")
+    If FSO.FolderExists(FName) Then
+        IsFolderExists = True
+    Else
+        IsFolderExists = False
+    End If
+    
+    Set FSO = Nothing
+    
+    
+End Function
+
+Public Function SelectFile() As String
+    
+    Dim strPath As String 'ファイルパス
+    
+    With Application.FileDialog(msoFileDialogOpen)
+        ''ボタンのテキストを[選択]にします
+        .ButtonName = "選択"
+        With .Filters
+            ''「ファイルの種類」をクリアします
+            .Clear
+            ''「ファイルの種類」を登録します
+            .Add "Excelブック", "*.xlsm", 1
+        End With
+        .AllowMultiSelect = False '複数ファイルを選択させない
+        ''表示するフォルダを指定します
+        .InitialFileName = ThisWorkbook.Path
+        ''表示するアイコンの大きさを指定します。
+        .InitialView = msoFileDialogViewLargeIcons
+        If .Show = True Then
+            strPath = .SelectedItems(1)  '選択したファイルのパス
+        Else
+            strPath = ""
+        End If
+    End With
+    
+    SelectFile = strPath
+End Function
 
 ' @Purpose:  Get Corresponding sheet
 ' @Param  :  {Workbook} Book
