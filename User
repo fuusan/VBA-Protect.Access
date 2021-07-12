@@ -1,0 +1,64 @@
+User = Environ("USERNAME")
+'------------------------------------------------------------
+'   処理内容:社員システムに社員名取得
+'   引数:<String>  User()                     : 社員番号
+'
+'   戻り値: String　社員名
+'　 作成：2021年07月12日
+'　 更新：
+'------------------------------------------------------------
+Public Function GetUserName(User As String) As String
+
+    Dim oUsers As Object 'IADsUser
+    Dim strUserDomain As String
+    Dim FName() As String
+    On Error GoTo ErrHandler
+    
+    
+    strUserDomain = Environ("USERDOMAIN")
+    Set oUsers = GetObject("WinNT://" & strUserDomain & "/" & User & ",user")
+    GetUserName = Trim(oUsers.FullName)
+    Set oUsers = Nothing
+    
+ExHandler:
+    Exit Function
+    
+ErrHandler:
+    'write on log file
+    MsgBox "社員名取得作業の際、エラーが発生いたしました。" & vbCrLf & "お手数かけますが、再度お試しください。", vbExclamation, TOOL_TITLE
+    Resume ExHandler
+End Function
+
+'------------------------------------------------------------
+'   処理内容:Outlookを使用して、メールアドレスを取得
+'   引数:<String>  UserName                     : 社員番号
+'
+'   戻り値: String　社員名
+'　 作成：2021年07月12日
+'　 更新：
+'------------------------------------------------------------
+Public Function GetEmail(UserName As String) As String
+    
+    Dim OL As Object, olAllUsers As Object, oExchUser  As Object
+    
+    On Error GoTo ErrHandler
+    
+    GetEmail = ""
+    Set OL = CreateObject("Outlook.Application")
+    Set olAllUsers = OL.Session.AddressLists.Item("All Users").AddressEntries
+    Set oExchUser = olAllUsers.Item(UserName)
+    GetEmail = oExchUser.GetExchangeUser.PrimarySmtpAddress
+    
+    If Not oExchUser Is Nothing Then Set oExchUser = Nothing
+    If Not olAllUsers Is Nothing Then Set olAllUsers = Nothing
+    If Not OL Is Nothing Then Set OL = Nothing
+
+ExHandler:
+    Exit Function
+
+ErrHandler:
+    'write on log file
+    MsgBox "社員メールアドレス取得の際、エラーが発生いたしました。" & vbCrLf & "お手数かけますが、再度お試しください。", vbExclamation, TOOL_TITLE
+    Resume ExHandler
+    
+End Function
