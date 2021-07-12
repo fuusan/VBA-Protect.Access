@@ -85,3 +85,23 @@ Public Function GetWB(objExcel As Object, FilePath As String) As Workbook
     End If
     
 End Function
+
+'拡張子無しのファイル名を取得
+Public Function GetFileName(ByVal FilePath As String) As String
+    Dim FSO As Object
+    
+    Set FSO = CreateObject("Scripting.FileSystemObject")
+    GetFileName = FSO.GetBaseName(FilePath)
+    Set FSO = Nothing
+End Function
+
+'ファイルの拡張子の取得
+Public Function GetExtensionFile(ByVal FilePath As String) As String
+
+    Dim FSO As Object
+    
+    Set FSO = CreateObject("Scripting.FileSystemObject")
+    GetExtensionFile = FSO.GetExtensionName(FilePath)
+    Set FSO = Nothing
+
+End Function
