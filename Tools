@@ -1,0 +1,32 @@
+'最新リリース日と一致しなければ確認メッセージを表示する
+Public Sub VersionCheck()
+    On Error GoTo Errhdl
+    Dim FileName As String
+    Dim strSQL As String
+    Dim RecentPrj   As String ' 最新日付
+    Dim ThisPrj     As String ' このツールの日付
+    Dim RlMsg       As String ' リリースメッセージ
+    Dim AccDBO As cls_AccessADO
+    
+    Set AccDBO = New cls_AccessADO
+    strSQL = "SELECT Max(tbl_SysAppVersion.Version) AS Versionの最大 FROM tbl_SysAppVersion;"
+    AccDBO.ExecuteSelect strSQL
+    
+    FileName = ThisWorkbook.Name
+    RecentPrj = AccDBO.getField(0)
+    ThisPrj = Right(Left(FileName, InStr(FileName, ".") - 1), 8)
+    AccDBO.CloseRS
+    
+    If Not RecentPrj = ThisPrj Then
+        MsgBox "ツールが最新ではありません。確認してください。" & vbCrLf & vbCrLf & _
+               "最新リリース日：" & CStr(RecentPrj) & vbCrLf & _
+               "　　このツール：" & CStr(ThisPrj), vbExclamation, TOOL_TITLE
+        Shell "C:\Windows\Explorer.exe " & TOOL_PATH, vbNormalFocus
+    End If
+
+EndPrc:
+    Exit Sub
+Errhdl:
+    LogFile_Write "Error", "バージョン検証", "Error Number:" & Err.Number & " " & Err.Description
+    Resume EndPrc
+End Sub
